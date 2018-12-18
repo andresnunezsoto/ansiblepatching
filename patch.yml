@@ -3,38 +3,10 @@
 - hosts: all
   gather_facts: true
   tasks:
-    - name: Grouping!
+    - name: Grouping servers by OS family
       become: true
       group_by:
         key: "{{ ansible_os_family }}"
-
-
-#############  THIS AREA TO STOP ANY SERVICES OR APPS PRIOR TO PATCH ##############
-
-
-    - name: Stopping UNMS Services
-      command: '~unms/app/unms-cli stop'
-      failed_when: no
-
-    - name: Stopping DNS Services
-      service:
-       name: named
-       state: stopped
-      failed_when: no
-
-    - name: Stopping VPN Services
-      service:
-       name: openvpn@server
-       state: stopped
-      failed_when: no
-
-    - name: Stopping Plex Media Server Services
-      service:
-       name: plexmediaserver
-       state: stopped
-      failed_when: no
-###################################################################################
-
 
 
 
@@ -95,7 +67,7 @@
       shell: yum clean all
        warn=false
 
-    - name: Patching Redhat based systems. BE PATIENT!!!!!!
+    - name: Patching Redhat Systems. BE PATIENT!!!!!!
       yum:
         name: '*'
         state: latest
@@ -126,33 +98,4 @@
 
 
 
-
-################ SECTION DEFINES STARTING APPS OR SERVICES #######################
-
-- hosts: all
-  gather_facts: true
-  tasks:
-
-    - name: Starting UNMS Services
-      become: true
-      command: '~unms/app/unms-cli start'
-      failed_when: no
-
-    - name: Starting DNS Services
-      service:
-       name: named
-       state: started
-      failed_when: no
-
-    - name: Starting VPN Services
-      service:
-       name: openvpn@server
-       state: started
-      failed_when: no
-
-    - name: Starting Plex Media Server Services
-      service:
-       name: plexmediaserver
-       state: started
-      failed_when: no
 
